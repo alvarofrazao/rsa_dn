@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drone movemen example</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .object {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+        }
+
+        .object img {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            // Load initial object data from server
+            $.getJSON('/objects.json', function(data) {
+                // Create HTML elements for each object and add them to the page
+                $.each(data, function(index, object) {
+                    var element = $('<div class="object"><img src="' + object.image_url + '"></div>');
+                    element.css({
+                        'left': object.x,
+                        'top': object.y
+                    });
+                    $('body').append(element);
+                });
+            });
+
+            // Continuously update the position of the objects on the page
+            setInterval(function() {
+                $.getJSON('/objects.json', function(data) {
+                    // Update the position of each object on the page
+                    $.each(data, function(index, object) {
+                        $('.object:eq(' + index + ')').css({
+                            'left': object.x,
+                            'top': object.y
+                        });
+                    });
+                });
+            }, 10);
+        });
+    </script>
+</head>
+<body>
+</body>
+</html>
