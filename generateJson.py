@@ -12,7 +12,8 @@ for i in range(NUM_OBJECTS):
         "id": i,
         "x": random.randint(1, 1000),
         "y": random.randint(1, 1000),
-        "com": 0,
+        "com": 1,
+        "target": 1
     }
     objects.append(obj)
 

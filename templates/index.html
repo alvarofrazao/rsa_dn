@@ -1,50 +1,100 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Drone movemen example</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <head>
+    <title>Drone positions</title>
     <style>
-        .object {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-        }
+      .object {
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        left: 0;
+        top: 0;
+      }
+      .dot {
+        position: absolute;
 
-        .object img {
-            width: 50px;
-            height: 50px;
+        width: 5px;
+        height: 5px;
+        background-color: red;
+        border-radius: 50%;
+      }
+      .line {
+        position: absolute;
+        height: 2px;
+        background-color: red;
+        transform-origin: 0 0;
         }
+      .id-text {
+        position: absolute;
+        font-size: 16px;
+        font-weight: bold;
+        color: black;
+        text-align: center;
+      }
+
     </style>
     <script>
-        $(document).ready(function() {
-            // Load initial object data from server
-            $.getJSON('/objects.json', function(data) {
-                // Create HTML elements for each object and add them to the page
-                $.each(data, function(index, object) {
-                    var element = $('<div class="object"><img src="' + object.image_url + '"></div>');
-                    element.css({
-                        'left': object.x,
-                        'top': object.y
-                    });
-                    $('body').append(element);
-                });
-            });
+        function updateObjects() {
+        fetch('/objects.json')
+            .then(response => response.json())
+            .then(objects => {
+            // Clear the existing objects and lines from the HTML page
+            document.getElementById('objects').innerHTML = '';
+            // Create an array to hold the objects that have a communication link
+            const comObjects = [];
+            // Iterate over each object and create an HTML element to display it
+            objects.forEach(obj => {
+                const objElem = document.createElement('img');
+                objElem.src = 'static/drone.png';
+                objElem.classList.add('object');
+                objElem.style.left = obj.x + 'px';
+                objElem.style.top = obj.y + 'px';
+                
+                // Add the object element to the HTML page
+                document.getElementById('objects').appendChild(objElem);
+                // If the object has a communication link, add it to the comObjects array
+                // Create an object element and add it to the HTML page
+                const objElem2 = document.createElement('div');
+                objElem2.classList.add('object');
+                objElem2.style.left = obj.x -10 + 'px';
+                objElem2.style.top = obj.y -10 + 'px';
+                // Create a text element to display the ID and add it to the object element
+                const idTextElem = document.createElement('div');
+                idTextElem.classList.add('id-text');
+                idTextElem.textContent = obj.id;
+                objElem2.appendChild(idTextElem);
+                document.getElementById('objects').appendChild(objElem2);
 
-            // Continuously update the position of the objects on the page
-            setInterval(function() {
-                $.getJSON('/objects.json', function(data) {
-                    // Update the position of each object on the page
-                    $.each(data, function(index, object) {
-                        $('.object:eq(' + index + ')').css({
-                            'left': object.x,
-                            'top': object.y
-                        });
-                    });
-                });
-            }, 10);
-        });
+                if (obj.com) {
+                comObjects.push(obj);
+                }
+            });
+            // Create HTML elements for each communication link
+            comObjects.forEach(obj => {
+                const lineElem = document.createElement('div');
+                lineElem.classList.add('line');
+                lineElem.style.left = (obj.x + 35) + 'px';
+                lineElem.style.top = (obj.y + 35) + 'px';
+                // Find the object that has a communication link with this object
+                const targetObj = objects.find(obj2 => obj2.id === obj.target);
+                // If the target object has a communication link, draw a line to it
+                if (targetObj && targetObj.com) {
+                const lineX = targetObj.x + 10 - obj.x - 10;
+                const lineY = targetObj.y + 10 - obj.y - 10;
+                const lineLength = Math.sqrt(lineX * lineX + lineY * lineY);
+                lineElem.style.width = lineLength + 'px';
+                lineElem.style.transform = `rotate(${Math.atan2(lineY, lineX)}rad)`;
+                // Add the line element to the HTML page
+                document.getElementById('objects').appendChild(lineElem);
+                }
+            });
+            });
+        }
+      setInterval(updateObjects, 100);
     </script>
-</head>
-<body>
-</body>
+  </head>
+  <body>
+    <h1>Drone position</h1>
+    <div id="objects"></div>
+  </body>
 </html>
