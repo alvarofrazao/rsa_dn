@@ -25,7 +25,7 @@ def on_message(client, userdata, msg):
     # ...
 
 
-def generate():
+def generate(client):
     f = open('in_cam.json')
     m = json.load(f)
     m["latitude"] = randint(1,20)
@@ -37,12 +37,24 @@ def generate():
     f.close()
     sleep(5)
 
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
-client.connect("192.168.98.10", 1883, 60)
+drone_port = 1883
+drone_ips = ["192.168.98.10","192.168.98.11","192.168.98.12","192.168.98.13","192.168.98.14"]
+clients = []
+threads = []
 
-threading.Thread(target=client.loop_forever).start()
+for d in drone_ips:
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.connect(d, drone_port, 60)
+    clients.append(client)
+
+for c in clients:
+    thread = threading.Thread(target=c.loop_forever)
+    thread.start()
+    threads.append(thread)
 
 while(True):
-    generate()
+    for c in clients:
+        generate(c)
+    sleep(1)
