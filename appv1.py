@@ -28,8 +28,8 @@ def on_message(client, userdata, msg):
 def generate(client):
     f = open('in_cam.json')
     m = json.load(f)
-    m["latitude"] = randint(1,20)
-    m["longitude"] = randint(21,30)
+    m["latitude"] = randint(1,4000)
+    m["longitude"] = randint(1,4000)
     print("latitude: %d",m["latitude"])
     print("longitude: %d",m["longitude"])
     m = json.dumps(m)
