@@ -66,7 +66,6 @@ def on_message(client, userdata, msg):
 
 def generate(client, objects):
     while(True):
-        index = 0
         for c in clients:
             f = open('in_cam.json')
             m = json.load(f)
@@ -77,24 +76,10 @@ def generate(client, objects):
             m["latitude"] = latitude
             longitude = randint(1,850)
             m["longitude"] = longitude
-
-            obj = objects[index]
-            obj["x"] = latitude
-            obj["y"] = longitude
-            objects[index] = obj
-
-            with open("objects.json", "w") as f:
-                    json.dump(objects, f)
-
-            #####################
-
-            print("latitude: %d",m["latitude"])
-            print("longitude: %d",m["longitude"])
             m = json.dumps(m)
             client.publish("vanetza/in/cam",m)
             f.close()
             sleep(1)
-            index = index + 1
 
 drone_port = 1883
 drone_ips = ["192.168.98.10","192.168.98.11","192.168.98.12","192.168.98.13","192.168.98.14"]
@@ -111,5 +96,3 @@ for d in drone_ips:
 
 
 t = threading.Thread(target=generate, args=(clients,objects,))
-t.start()
-t.join()

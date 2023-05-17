@@ -12,22 +12,11 @@ threading.Thread()
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
-    client.subscribe("vanetza/out/cam")
+    client.subscribe("flask/in")
     # client.subscribe("vanetza/out/denm")
     # ...
 
-
-# É chamada automaticamente sempre que recebe uma mensagem nos tópicos subscritos em cima
-def on_message(client, userdata, msg):
-    message = json.loads(msg.payload.decode('utf-8'))
-
-    #print('Topic: ' + msg.topic)
-    #print('Message' + message)
-
-    # lat = message["latitude"]
-    # ...
-
-def generate(client, index):
+""" def generate(client, index):
     f = open('in_cam.json')
     m = json.load(f)
 
@@ -50,33 +39,14 @@ def generate(client, index):
 
     m = json.dumps(m)
     client.publish("vanetza/in/cam",m)
-    f.close()
-
-def service_start():
-    drone_port = 1883
-    drone_ips = ["192.168.98.10","192.168.98.11","192.168.98.12","192.168.98.13","192.168.98.14"]
-    clients = []
-
-    for d in drone_ips:
-        client = mqtt.Client()
-        client.on_connect = on_connect
-        client.on_message = on_message
-        client.connect(d, drone_port, 60)
-        clients.append(client)
-    return clients
+    f.close() """
 
 
-def send_loop(clients):
-    while(True):
-        i = 0
-        for c in clients:
-            generate(c, i)
-            i = i + 1
-        sleep(1)
+
 
 app = Flask(__name__)
 
-NUM_DRONES = 5
+NUM_DRONES = 6
 
 objects = []
 for i in range(NUM_DRONES):
@@ -88,9 +58,27 @@ for i in range(NUM_DRONES):
         "target": 1
     }
     objects.append(obj)
-
 with open("objects.json", "w") as f:
     json.dump(objects, f)
+
+def on_message(client, userdata, msg):
+    message = json.loads(msg.payload.decode('utf-8'))
+    obj['id']= message['id']
+    obj['x'] = abs(message['x'])
+    obj['y'] = abs(message['y'])
+    objects[message['id']] = obj
+    with open("objects.json", "w") as f:
+        json.dump(objects, f)
+
+
+
+msg_src = mqtt.Client()
+msg_src.on_connect = on_connect
+msg_src.on_message = on_message
+msg_src.connect("192.168.98.20",1883,60)
+
+msg_thread = threading.Thread(target=msg_src.loop_forever)
+msg_thread.start()
 
 # Define route to return object data as JSON
 @app.route('/objects.json')
@@ -106,22 +94,9 @@ def index():
 
 if __name__ == '__main__':
     # Run the Flask app
-    threads = []
-    clients = service_start()
-    for c in clients:
-        thread = threading.Thread(target=c.loop_forever)
-        thread.start()
-        threads.append(thread)
+    flask_thread = threading.Thread(target = app.run(host = '0.0.0.0',debug=True))
+    flask_thread.start()
     
-    flask = threading.Thread(target = app.run(host = '0.0.0.0',debug=True))
-    flask.start()
-    for c in clients:
-        thread = threading.Thread(target=c.loop_forever)
-        thread.start()
-        threads.append(thread)
-    
-    msg_thread = threading.Thread(target=send_loop(clients))
-    msg_thread.start()
 
 #####################
 

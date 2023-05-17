@@ -2,7 +2,7 @@ FROM python:3.9-slim-buster
 
 WORKDIR /app
 
-COPY appv3.py examples/ /app/
+COPY appv3.py /app/
 
 COPY templates/ /app/templates
 
