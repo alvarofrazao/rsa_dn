@@ -2,7 +2,7 @@ import json
 import paho.mqtt.client as mqtt
 import threading
 from time import sleep
-from random import randint
+from random import uniform
 import pandas as pd
 
 threading.Thread()
@@ -95,8 +95,8 @@ r_idx = 0
 while (True):
     df_idx = 0
     for c in clients:
-        lat = randint[0,1200]#dataframes[df_idx].iloc[0, 0]
-        longt =  randint[0,1200]#dataframes[df_idx].iloc[0, 1]
+        lat = dataframes[df_idx].iloc[0, 0]#uniform(0,1200)
+        longt =  dataframes[df_idx].iloc[0, 1]#uniform(0,1200)
         generate(c,lat,longt)
         send2flask(flask_cl,df_idx,lat,longt)
         df_idx += 1

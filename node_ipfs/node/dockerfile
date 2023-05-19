@@ -6,5 +6,6 @@ WORKDIR /usr/local/bin
 
 COPY start_ipfs.sh /usr/local/bin/start_ipfs.sh
 
+RUN chmod +x /usr/local/bin/start_ipfs.sh
 
-CMD ./start_ipfs.sh
+ENTRYPOINT ["/bin/sh", "-c", "start_ipfs.sh"]

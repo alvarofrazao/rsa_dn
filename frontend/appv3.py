@@ -64,8 +64,8 @@ with open("objects.json", "w") as f:
 def on_message(client, userdata, msg):
     message = json.loads(msg.payload.decode('utf-8'))
     obj['id']= message['id']
-    obj['x'] = abs(message['x'])
-    obj['y'] = abs(message['y'])
+    obj['x'] = (abs(message['x'])%1)*1200
+    obj['y'] = (abs(message['y'])%1)*1200
     objects[message['id']] = obj
     with open("objects.json", "w") as f:
         json.dump(objects, f)
