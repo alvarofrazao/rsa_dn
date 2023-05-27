@@ -1,0 +1,25 @@
+version: '2.4'
+services:
+    
+    rsu_node:
+        hostname: rsu_node
+        restart: always
+        image: btnode:latest
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.40
+    obu10_node:
+        hostname: node10
+        depends_on:
+            - rsu_node
+        restart: always
+        image: regnode:latest
+        environment:
+            - CONFIG_NAME=config0
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.50
+
+networks:
+    vanetzalan0:
+        external: true

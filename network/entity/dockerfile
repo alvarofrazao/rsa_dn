@@ -1,0 +1,14 @@
+FROM python:3.9-slim-buster
+
+WORKDIR /app
+
+COPY app.py in_cam.json /app/
+
+COPY set1/ /app/set1
+COPY set2/ /app/set2
+
+COPY requirements.txt /app/
+
+RUN pip install -r requirements.txt 
+
+CMD ["python" , "app.py"]

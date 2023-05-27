@@ -4,8 +4,12 @@ EXPOSE 4001 5001 8080
 
 WORKDIR /usr/local/bin
 
+ENV CONFIG_NAME=
+
 COPY start_ipfs.sh /usr/local/bin/start_ipfs.sh
+
+COPY /configs /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/start_ipfs.sh
 
-ENTRYPOINT ["/bin/sh", "-c", "start_ipfs.sh"]
+ENTRYPOINT ["/bin/sh", "-c", "start_ipfs.sh", "${CONFIG_NAME}"]

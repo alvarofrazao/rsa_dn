@@ -1,4 +1,4 @@
-cd node_ipfs/node
+cd ipfs/node
 docker build . -t regnode:latest --no-cache
 
 cd ..

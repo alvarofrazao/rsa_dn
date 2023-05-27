@@ -1,0 +1,47 @@
+version: '2.4'
+services:
+    main_entity:
+        hostname: msg_sender
+        restart: always
+        image: sender:latest
+        environment:
+            - IPFS_DAEMON_IP=192.168.98.40
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.30
+    frontend:
+        hostname: display
+        depends_on:
+            - main_entity
+        restart: always
+        image: frontend:latest
+        ports:
+            - "5000:5000"
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.31
+    
+    entity:
+        hostname: entity
+        restart: always
+        image: activent:latest
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.100
+
+    connector_10:
+        hostname: cn10
+        restart: always
+        image: connector:latest
+        environment:
+            - CONNECTOR_ID=0
+            - CONNECTOR_QUEUE=connector/out
+            - IPFS_DAEMON_IP=192.168.98.50
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.80
+
+
+networks:
+    vanetzalan0:
+        external: true

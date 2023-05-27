@@ -4,6 +4,8 @@ EXPOSE 4001 5001 8080
 
 WORKDIR /usr/local/bin
 
+COPY config /usr/local/bin/
+
 COPY start_ipfs.sh /usr/local/bin/start_ipfs.sh
 
 RUN chmod +x /usr/local/bin/start_ipfs.sh
