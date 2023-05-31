@@ -6,25 +6,17 @@ services:
         image: sender:latest
         environment:
             - IPFS_DAEMON_IP=192.168.98.40
+            - PYTHONUNBUFFERED=1
+            - DRONE_NUMBER = 5
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.30
-    frontend:
-        hostname: display
-        depends_on:
-            - main_entity
-        restart: always
-        image: frontend:latest
-        ports:
-            - "5000:5000"
-        networks:
-            vanetzalan0:
-                ipv4_address: 192.168.98.31
-    
     entity:
         hostname: entity
         restart: always
         image: activent:latest
+        environment:
+            - PYTHONUNBUFFERED=1
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.100
@@ -33,13 +25,77 @@ services:
         hostname: cn10
         restart: always
         image: connector:latest
+        depends_on:
+            - main_entity
         environment:
             - CONNECTOR_ID=0
             - CONNECTOR_QUEUE=connector/out
             - IPFS_DAEMON_IP=192.168.98.50
+            - OBU_IP=192.168.98.10
+            - PYTHONUNBUFFERED=1
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.80
+    connector_11:
+        hostname: cn11
+        restart: always
+        image: connector:latest
+        depends_on:
+            - main_entity
+        environment:
+            - CONNECTOR_ID=1
+            - CONNECTOR_QUEUE=connector/out
+            - IPFS_DAEMON_IP=192.168.98.51
+            - OBU_IP=192.168.98.11
+            - PYTHONUNBUFFERED=1
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.81
+    connector_12:
+        hostname: cn12
+        restart: always
+        image: connector:latest
+        depends_on:
+            - main_entity
+        environment:
+            - CONNECTOR_ID=2
+            - CONNECTOR_QUEUE=connector/out
+            - IPFS_DAEMON_IP=192.168.98.53
+            - OBU_IP=192.168.98.13
+            - PYTHONUNBUFFERED=1
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.82
+    connector_13:
+        hostname: cn13
+        restart: always
+        image: connector:latest
+        depends_on:
+            - main_entity
+        environment:
+            - CONNECTOR_ID=3
+            - CONNECTOR_QUEUE=connector/out
+            - IPFS_DAEMON_IP=192.168.98.53
+            - OBU_IP=192.168.98.13
+            - PYTHONUNBUFFERED=1
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.83
+    connector_14:
+        hostname: cn14
+        restart: always
+        image: connector:latest
+        depends_on:
+            - main_entity
+        environment:
+            - CONNECTOR_ID=4
+            - CONNECTOR_QUEUE=connector/out
+            - IPFS_DAEMON_IP=192.168.98.54
+            - OBU_IP=192.168.98.14
+            - PYTHONUNBUFFERED=1
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.84
 
 
 networks:

@@ -4,6 +4,8 @@ WORKDIR /app
 
 ENV IPFS_DAEMON_IP=
 
+ENV DRONE_NUMBER=
+
 COPY examples/ /app
 
 COPY appv1.py /app

@@ -1,6 +1,6 @@
 cd network
 cd drone
-docker build . -t sender:latest --no-cache
+docker build . -t sender:latest 
 
 cd ..
 cd frontend
@@ -10,4 +10,4 @@ cd ../entity
 docker build . -t activent:latest 
 
 cd ../connector
-docker build . -t connector:latest --no-cache
+docker build . -t connector:latest 

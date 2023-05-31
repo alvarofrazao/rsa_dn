@@ -15,10 +15,54 @@ services:
         restart: always
         image: regnode:latest
         environment:
-            - CONFIG_NAME=config0
+            - API_ADDRESS=/ip4/192.168.98.50/tcp/5001
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.50
+    obu11_node:
+        hostname: node11
+        depends_on:
+            - rsu_node
+        restart: always
+        image: regnode:latest
+        environment:
+            - API_ADDRESS=/ip4/192.168.98.51/tcp/5001
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.51
+    obu12_node:
+        hostname: node12
+        depends_on:
+            - rsu_node
+        restart: always
+        image: regnode:latest
+        environment:
+            - API_ADDRESS=/ip4/192.168.98.52/tcp/5001
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.52
+    obu13_node:
+        hostname: node13
+        depends_on:
+            - rsu_node
+        restart: always
+        image: regnode:latest
+        environment:
+            - API_ADDRESS=/ip4/192.168.98.53/tcp/5001
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.53
+    obu14_node:
+        hostname: node14
+        depends_on:
+            - rsu_node
+        restart: always
+        image: regnode:latest
+        environment:
+            - API_ADDRESS=/ip4/192.168.98.54/tcp/5001
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.54
 
 networks:
     vanetzalan0:

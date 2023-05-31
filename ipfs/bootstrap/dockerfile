@@ -1,4 +1,4 @@
-FROM ipfs/go-ipfs:latest
+FROM ipfs/go-ipfs:v0.5.0
 
 EXPOSE 4001 5001 8080
 

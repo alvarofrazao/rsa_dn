@@ -1,10 +1,10 @@
-FROM ipfs/go-ipfs:latest
+FROM ipfs/go-ipfs:v0.5.0
 
 EXPOSE 4001 5001 8080
 
 WORKDIR /usr/local/bin
 
-ENV CONFIG_NAME=
+ENV API_ADDRESS=
 
 COPY start_ipfs.sh /usr/local/bin/start_ipfs.sh
 
@@ -12,4 +12,4 @@ COPY /configs /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/start_ipfs.sh
 
-ENTRYPOINT ["/bin/sh", "-c", "start_ipfs.sh", "${CONFIG_NAME}"]
+ENTRYPOINT ["/bin/sh", "-c", "start_ipfs.sh"]

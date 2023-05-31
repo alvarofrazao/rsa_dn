@@ -3,7 +3,7 @@ ipfs init
 ipfs id
 
 
-ipfs daemon --migrate --config /usr/local/bin/config
+ipfs daemon --migrate --api /ip4/192.168.98.40/tcp/5001
 
 ipfs swarm peers
 

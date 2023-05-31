@@ -11,7 +11,6 @@ threading.Thread()
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
-    client.subscribe("vanetza/out/cam")
     # client.subscribe("vanetza/out/denm")
     # ...
 
@@ -41,8 +40,8 @@ def generate(client, lat, longt):
 
 
 drone_port = 1883
-connector_ips = ["192.168.98.10"]#, "192.168.98.11", "192.168.98.12",
-                 #"192.168.98.13", "192.168.98.14"]
+connector_ips = ["192.168.98.10", "192.168.98.11", "192.168.98.12",
+                 "192.168.98.13", "192.168.98.14"]
 clients = []
 threads = []
 
@@ -72,11 +71,11 @@ dataset_2 = []
 dataset_final = []
 
 for name in filenames_ds1:
-    df = pd.read_csv(name)
+    df = pd.read_csv(name,sep=',')
     dataset_1.append(df)
 
 for name in filenames_ds2:
-    df = pd.read_csv(name)
+    df = pd.read_csv(name,sep=',')
     dataset_2.append(df)
 
 dataset_final.append(dataset_1)
@@ -87,12 +86,18 @@ print("Generating positions\n")
 while (True):
     for i in range(350):
         k = random.randint(0, 1)
-        frame = random.randint(0, len(dataset_1))
-        row = random.randint(0, len(dataset_final[k][frame]))
-        lat = dataset_1[frame][row].iloc[0, 0]
-        lng = dataset_1[frame][row].iloc[0, 1]
+        frame = random.randint(0, (len(dataset_1)-1))
+        row = random.randint(0, (len(dataset_final[k][frame])-1))
+        print("Generated the following :k = " + str(k) + " frame = " + str(frame) + " row = " + str(row) +"\n")
+        
+        if(k <= 0):
+            lat = dataset_1[frame].iloc[row, 0]
+            lng = dataset_1[frame].iloc[row, 1]
+        else:
+            lat = dataset_2[frame].iloc[row, 1]
+            lng = dataset_2[frame].iloc[row, 1]
         print("Generated latitude:" + str(lat) + " longitude: "+str(lng))
         for c in clients:
-            c.generate(c,lat,lng)
+            generate(c,lat,lng)
 
     sleep(15)
