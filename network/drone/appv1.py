@@ -149,15 +149,20 @@ cell_grid = generate_cells(core_positions[0],core_positions[1],distance,drone_nu
 centers = gen_centers(cell_grid[cur_quarter],drone_number)
 
 center_state = [False] * (len(centers)-1)
+k = 0
 while (True):
     initiate(i_clients,core_positions)
     for i in i_clients:
-        k = 0
         for a in center_state:
             if(~a):
                 center_state[k] = True
                 send_coords(i,centers[k])
             else:
                 k +=1
+            if(k >= len(centers)):
+                k = 0
+                #Should have some logic because this means that the quarter has already been processed - to do after testing
+    if(k >= len(centers)):
+                k = 0
     sleep(2)
 
