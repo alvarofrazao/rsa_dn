@@ -1,0 +1,7 @@
+primeiro putval:
+
+mem = id*100 + val (ou val*2)
+
+segundo putval:
+
+mem = (mem/100) * 10000 + ((mem%100)+val) + id*10

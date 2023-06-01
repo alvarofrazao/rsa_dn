@@ -7,7 +7,7 @@ services:
         environment:
             - IPFS_DAEMON_IP=192.168.98.40
             - PYTHONUNBUFFERED=1
-            - DRONE_NUMBER = 5
+            - DRONE_NUMBER=5
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.30
@@ -15,6 +15,8 @@ services:
         hostname: entity
         restart: always
         image: activent:latest
+        depends_on:
+            - main_entity
         environment:
             - PYTHONUNBUFFERED=1
         networks:

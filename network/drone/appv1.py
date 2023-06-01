@@ -15,7 +15,7 @@ threading.Thread()
 daemon_ip = os.environ.get('IPFS_DAEMON_IP')
 address = multiaddr.Multiaddr("/ip4/" + daemon_ip + "/tcp/5001")
 api = ipfs.connect(str(address), session=True)
-drone_number = os.environ.get('DRONE_NUMBER')
+drone_number = int(os.environ.get('DRONE_NUMBER'))
 
 drone_port = 1883
 drone_ips = ["192.168.98.10", "192.168.98.11", "192.168.98.12",
@@ -35,7 +35,7 @@ drn_state = []
 drn_pos = []
 run_count = []
 
-core_positions = (40.83548605,-7.99394846)
+core_positions = [40.83548605,-7.99394846]
 
 def generate_cells(start_lat, start_long, distance, n):
 
@@ -54,7 +54,7 @@ def generate_cells(start_lat, start_long, distance, n):
         math.sin(math.radians(delta_latitude)) / math.cos(math.radians(start_lat))))
 
     for dir in directions:
-        grid = [[(0.0, 0.0) for _ in range(n)] for _ in range(n)]
+        grid = [[[0.0, 0.0] for _ in range(n)] for _ in range(n)]
         for lat_idx in range(0, n): # row iteration (latitude variation)
             for long_idx in range(0,n): #column iteration (longitude variation)
                 grid[lat_idx][long_idx] = (start_lat+(dir[0]*(delta_latitude*lat_idx)),start_long+(dir[1]*(delta_longitude*long_idx)))
@@ -72,7 +72,7 @@ def gen_centers(cell_grid, n):
             avg_lat = math.degrees(sum(latitudes)/4)
             avg_long = math.degrees(sum(longitudes)/4)
 
-            centers.append((avg_lat,avg_long))
+            centers.append([avg_lat,avg_long])
 
     return centers
 
@@ -127,7 +127,33 @@ def send_coords(client,pos):
     client.publish("connector/core/in", m)
     sleep(0.5)
 
+def gen_con(client,userdata,flags,rc):
+    print("Sucessfully connected to rsu broker with code " + str(rc))
 
+def gen_onmsg(client,userfata,message):
+    m = json.loads(message.payload.decode('utf-8'))
+
+    print("Unexpected message received on generator client\n")
+    print(m)
+
+def init_gen(gen_client,pos0,posN):
+
+    obj = {
+    "start_lat": pos0[0],
+    "start_longt": pos0[1],
+    "far_lat": posN[0],
+    "far_longt": posN[1],
+    }
+    m = json.dumps(obj)
+    gen_client.publish("generator/in",m)
+
+gen_client = mqtt.Client()
+gen_client.on_connect = gen_con
+gen_client.on_message = gen_onmsg
+gen_client.connect(drone_ips[5],drone_port,60)
+thread = threading.Thread(target=gen_client.loop_forever)
+thread.start()
+threads.append(thread)
 
 for i in connector_ips:
     i_client = mqtt.Client()
@@ -149,20 +175,48 @@ cell_grid = generate_cells(core_positions[0],core_positions[1],distance,drone_nu
 centers = gen_centers(cell_grid[cur_quarter],drone_number)
 
 center_state = [False] * (len(centers)-1)
+
+maintain = False
+
 k = 0
+det_total = 0
+initiate(i_clients,core_positions)
+init_gen(gen_client,core_positions,cell_grid[cur_quarter][drone_number-1][drone_number-1])
+
+
 while (True):
-    initiate(i_clients,core_positions)
-    for i in i_clients:
-        for a in center_state:
-            if(~a):
-                center_state[k] = True
-                send_coords(i,centers[k])
-            else:
-                k +=1
-            if(k >= len(centers)):
-                k = 0
+    for i in range(0,(len(i_clients)-1)):
+        if(drn_state[i] == state[0]):
+            for a in center_state:
+                if(~a):
+                    center_state[k] = True
+                    send_coords(i_clients[i],centers[k])
+                else:
+                    k +=1
+                if(k >= len(centers)):
+                    k = 0
+                    cur_quarter += 1
+                    centers = gen_centers(cell_grid[cur_quarter],drone_number)
+                    init_gen(gen_client,core_positions,cell_grid[cur_quarter][drone_number-1][drone_number-1])
                 #Should have some logic because this means that the quarter has already been processed - to do after testing
-    if(k >= len(centers)):
-                k = 0
-    sleep(2)
+        else:
+            pass
+    for count in det_count:
+        det_total += count
+    if (det_total > drone_number):
+        maintain = True
+    else:
+        if(cur_quarter >= 4):
+            cur_quarter = 0
+            det_total = 0
+            print("All cells have been scanned\n")
+            print("Total scanned objects = " + str(det_total))
+    x = 0
+    print("Current drone positions:")
+    for pos in drn_pos:
+        print("Drone ID - " + str(x) + " lat - " + str(pos[0]) + " longt - " + str(pos[1]))
+        x+=1
+    print("Current detection counters:")
+    print(det_count)
+    sleep(0.5)
 

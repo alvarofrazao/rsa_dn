@@ -16,8 +16,8 @@ bootstrap_port = 4001
 mqtt_port = 1883
 m_client = None
 core = None
-current = (0.0,0.0)
-target = (0.0,0.0)
+current = [0.0,0.0]
+target = [0.0,0.0]
 core_ip = "192.168.98.20"
 
 f = open('denm.json')
@@ -104,7 +104,6 @@ def detect(lat, lng):
     else:
         return False
 
-
 def on_message(client, userdata, msg):
 
     message = json.loads(msg.payload.decode('utf-8'))
@@ -156,6 +155,7 @@ c_thread = threading.Thread(target=core.loop_forever)
 c_thread.start()
 
 while(True):
+    
     while(cur_state == state[0]):
         pass
     if(cur_state == state[1]):
@@ -168,7 +168,8 @@ while(True):
         sleep(randint(5,10)*1.5)
         cur_state = state[3]
         update(core,current,3,1)
-    for pos in ret_path:
-        current = pos
-        update(core,current,3,1)
-    update(core,current,0,2)
+    if(cur_state == state[3]):
+        for pos in ret_path:
+            current = pos
+            update(core,current,3,1)
+        update(core,current,0,2)

@@ -8,13 +8,13 @@ import random
 
 threading.Thread()
 
+gen_start = [0.0,0.0]
+gen_end = [0.0,0.0]
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
     # client.subscribe("vanetza/out/denm")
     # ...
-
-
 
 
 # É chamada automaticamente sempre que recebe uma mensagem nos tópicos subscritos em cima
@@ -27,23 +27,41 @@ def on_message(client, userdata, msg):
     # lat = message["latitude"]
     # ...
 
+def gen_con(client,userdata,flags,rc):
+    print("Connected to generator broker with code" + str(rc))
+    client.subscribe("generator/in")
 
-def generate(client, lat, longt):
+def gen_msghndl(client,userdata, msg):
+    global gen_start,gen_end
+    m = json.loads(msg.payload.decode('utf-8'))
+    gen_start = [m['start_lat'],m['start_longt']]
+    gen_end = [m['far_lat'],m['far_longt']]
+
+def generate(client,pos):
     f = open('in_cam.json')
     m = json.load(f)
-    m["latitude"] = lat
-    m["longitude"] = longt
+    m["latitude"] = pos[0]
+    m["longitude"] = pos[1]
     m = json.dumps(m)
     client.publish("connector/in", m)
     f.close()
-    sleep(2)
 
 
 drone_port = 1883
 connector_ips = ["192.168.98.10", "192.168.98.11", "192.168.98.12",
                  "192.168.98.13", "192.168.98.14"]
+core_ip = "192.168.98.20"
 clients = []
 threads = []
+
+gen_client = mqtt.Client()
+gen_client.on_connect = gen_con
+gen_client.on_message = gen_msghndl
+gen_client.connect(core_ip,drone_port,60)
+thread = threading.Thread(target=gen_client.loop_forever)
+thread.start()
+threads.append(thread)
+
 
 for d in connector_ips:
     client = mqtt.Client()
@@ -60,44 +78,12 @@ for c in clients:
 
 
 
-filenames_ds1 = ["set1/d1.csv", "set1/d2.csv", "set1/d3.csv",
-                 "set1/d4.csv", "set1/d5.csv"]
-
-filenames_ds2 = ["set2/d1.csv", "set2/d2.csv", "set2/d3.csv",
-                 "set2/d4.csv", "set2/d5.csv"]
-
-dataset_1 = []
-dataset_2 = []
-dataset_final = []
-
-for name in filenames_ds1:
-    df = pd.read_csv(name,sep=',')
-    dataset_1.append(df)
-
-for name in filenames_ds2:
-    df = pd.read_csv(name,sep=',')
-    dataset_2.append(df)
-
-dataset_final.append(dataset_1)
-dataset_final.append(dataset_2)
-
-print("Generating positions\n")
+print("Generating positions:\n")
 
 while (True):
-    for i in range(350):
-        k = random.randint(0, 1)
-        frame = random.randint(0, (len(dataset_1)-1))
-        row = random.randint(0, (len(dataset_final[k][frame])-1))
-        print("Generated the following :k = " + str(k) + " frame = " + str(frame) + " row = " + str(row) +"\n")
-        
-        if(k <= 0):
-            lat = dataset_1[frame].iloc[row, 0]
-            lng = dataset_1[frame].iloc[row, 1]
-        else:
-            lat = dataset_2[frame].iloc[row, 1]
-            lng = dataset_2[frame].iloc[row, 1]
-        print("Generated latitude:" + str(lat) + " longitude: "+str(lng))
-        for c in clients:
-            generate(c,lat,lng)
-
-    sleep(15)
+    
+    pos = [round(random.uniform(gen_start[0],gen_end[0]),8),round(random.uniform(gen_start[1],gen_end[1]),8)]
+    print("Activty generated at lat - " + str(pos[0]) + " longt - " + str(pos[1]))
+    for c in clients:
+        generate(c,pos)
+    sleep(random.randint(1,4))
