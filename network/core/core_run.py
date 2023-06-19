@@ -116,7 +116,6 @@ def drone_onmsg(client, userdata, message):
         else:
             drn_pos[drone_id] = [m['pos_lat'],m['pos_lng']]
             drn_state[drone_id] = m['state']
-    update_markers()
 
 def initiate(clients,pos):
     global drn_pos,drn_state,det_count
@@ -196,7 +195,7 @@ distance = 3
 cell_grid = generate_cells(core_positions[0],core_positions[1],distance,drone_number)
 centers = gen_centers(cell_grid[cur_quarter],drone_number)
 
-center_state = [False] * (len(centers)-1)
+center_state = [False] * (len(centers))
 
 maintain = False
 
@@ -254,11 +253,12 @@ while (True):
     x = 0
     print("Current drone positions:")
     for pos in drn_pos:
-        print("Drone ID - " + str(x) + " lat - " + str(round(pos[0],4)) + " longt - " + str(round(pos[1],4)) + "state - " + state[drn_state[x]])
+        print("Drone ID - " + str(x) + " lat - " + str(round(pos[0],4)) + " longt - " + str(round(pos[1],4)) + " state - " + state[drn_state[x]])
         x+=1
     print("Current detection counters:")
     print(det_count)
     print("Total Number of runs per drone:")
     print(run_count)
+    update_markers()
     sleep(1)
 

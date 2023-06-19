@@ -24,6 +24,8 @@ docker network create vanetzalan0 --subnet 192.168.98.0/24
 
 Running the project:
 
-The project can be executed using the run_all.sh script.
+Open 3 terminal windows;
+
+In each of them, run the docker-compose file present in the /vanetza, /ipfs and /network folders
 
 To stop the running of the project, simply run the cleanup.sh script
