@@ -1,15 +1,15 @@
 version: '2.4'
 services:
     
-    rsu_node:
-        hostname: rsu_node
+    core_node:
+        hostname: core_node
         restart: always
         image: btnode:latest
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.40
-    obu10_node:
-        hostname: node10
+    d10_node:
+        hostname: d10_node
         depends_on:
             - rsu_node
         restart: always
@@ -19,8 +19,8 @@ services:
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.50
-    obu11_node:
-        hostname: node11
+    d11_node:
+        hostname: d11_node
         depends_on:
             - rsu_node
         restart: always
@@ -30,8 +30,8 @@ services:
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.51
-    obu12_node:
-        hostname: node12
+    d12_node:
+        hostname: d12_node
         depends_on:
             - rsu_node
         restart: always
@@ -41,8 +41,8 @@ services:
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.52
-    obu13_node:
-        hostname: node13
+    d13_node:
+        hostname: d13_node
         depends_on:
             - rsu_node
         restart: always
@@ -52,8 +52,8 @@ services:
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.53
-    obu14_node:
-        hostname: node14
+    d14_node:
+        hostname: d14_node
         depends_on:
             - rsu_node
         restart: always

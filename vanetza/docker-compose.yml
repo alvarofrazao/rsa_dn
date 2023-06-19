@@ -1,0 +1,127 @@
+version: '2.4'
+services:
+    core_broker:
+        hostname: core_broker
+        restart: always
+        image: code.nap.av.it.pt:5050/mobility-networks/vanetza:latest
+        cap_add:
+            - "NET_ADMIN"
+        environment:
+            - VANETZA_STATION_ID=1
+            - VANETZA_STATION_TYPE=15
+            - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:01
+            - VANETZA_INTERFACE=br0
+            - START_EMBEDDED_MOSQUITTO=true
+            - SUPPORT_MAC_BLOCKING=true
+            - VANETZA_CAM_PERIODICITY=0
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.20
+        sysctls:
+            kernel.msgmax: 65536
+            kernel.msgmnb: 65536
+
+    d10_broker:
+        hostname: d10_broker
+        restart: always
+        image: code.nap.av.it.pt:5050/mobility-networks/vanetza:latest
+        cap_add:
+            - "NET_ADMIN"
+        environment:
+            - VANETZA_STATION_ID=2
+            - VANETZA_STATION_TYPE=5
+            - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:02
+            - VANETZA_INTERFACE=br0
+            - START_EMBEDDED_MOSQUITTO=true
+            - SUPPORT_MAC_BLOCKING=true
+            - VANETZA_CAM_PERIODICITY=0
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.10
+        sysctls:
+            kernel.msgmax: 65536
+            kernel.msgmnb: 65536
+    d11_broker:
+        hostname: d11_broker
+        restart: always
+        image: code.nap.av.it.pt:5050/mobility-networks/vanetza:latest
+        cap_add:
+            - "NET_ADMIN"
+        environment:
+            - VANETZA_STATION_ID=2
+            - VANETZA_STATION_TYPE=5
+            - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:02
+            - VANETZA_INTERFACE=br0
+            - START_EMBEDDED_MOSQUITTO=true
+            - SUPPORT_MAC_BLOCKING=true
+            - VANETZA_CAM_PERIODICITY=0
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.11
+        sysctls:
+            kernel.msgmax: 65536
+            kernel.msgmnb: 65536
+    d12_broker:
+        hostname: d12_broker
+        restart: always
+        image: code.nap.av.it.pt:5050/mobility-networks/vanetza:latest
+        cap_add:
+            - "NET_ADMIN"
+        environment:
+            - VANETZA_STATION_ID=2
+            - VANETZA_STATION_TYPE=5
+            - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:02
+            - VANETZA_INTERFACE=br0
+            - START_EMBEDDED_MOSQUITTO=true
+            - SUPPORT_MAC_BLOCKING=true
+            - VANETZA_CAM_PERIODICITY=0
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.12
+        sysctls:
+            kernel.msgmax: 65536
+            kernel.msgmnb: 65536
+    d13_broker:
+        hostname: d13_broker
+        restart: always
+        image: code.nap.av.it.pt:5050/mobility-networks/vanetza:latest
+        cap_add:
+            - "NET_ADMIN"
+        environment:
+            - VANETZA_STATION_ID=2
+            - VANETZA_STATION_TYPE=5
+            - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:02
+            - VANETZA_INTERFACE=br0
+            - START_EMBEDDED_MOSQUITTO=true
+            - SUPPORT_MAC_BLOCKING=true
+            - VANETZA_CAM_PERIODICITY=0
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.13
+        sysctls:
+            kernel.msgmax: 65536
+            kernel.msgmnb: 65536
+    d14_broker:
+        hostname: d14_broker
+        restart: always
+        image: code.nap.av.it.pt:5050/mobility-networks/vanetza:latest
+        cap_add:
+            - "NET_ADMIN"
+        environment:
+            - VANETZA_STATION_ID=2
+            - VANETZA_STATION_TYPE=5
+            - VANETZA_MAC_ADDRESS=6e:06:e0:03:00:02
+            - VANETZA_INTERFACE=br0
+            - START_EMBEDDED_MOSQUITTO=true
+            - SUPPORT_MAC_BLOCKING=true
+            - VANETZA_CAM_PERIODICITY=0
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.14
+        sysctls:
+            kernel.msgmax: 65536
+            kernel.msgmnb: 65536
+
+networks:
+    vanetzalan0:
+        external: true

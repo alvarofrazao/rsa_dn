@@ -1,19 +1,21 @@
 FROM python:3.9-slim-buster
 
+EXPOSE 4001 5001 8080
+
 WORKDIR /app
 
-ENV IPFS_DAEMON_IP=
+ENV CONNECTOR_ID=
 
-ENV DRONE_NUMBER=
+ENV CONNECTOR_QUEUE= 
 
-COPY examples/ /app
+ENV OBU_IP= 
 
-COPY appv1.py /app
+ENV IPFS_DAEMON_IP= 
 
-COPY coords/ /app/coords/
+COPY drone_run.py dm.json forest.jpg /app/
 
 COPY requirements.txt /app/
 
 RUN pip install -r requirements.txt 
 
-CMD [ "python" , "appv1.py" ]
+CMD ["python" , "drone_run.py"]

@@ -1,0 +1,4 @@
+paho-mqtt == 1.6.1
+Flask == 2.3.2
+pandas
+ipfshttpclient==0.7.0

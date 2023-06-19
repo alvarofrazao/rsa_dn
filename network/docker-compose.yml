@@ -1,9 +1,9 @@
 version: '2.4'
 services:
-    main_entity:
-        hostname: msg_sender
+    core_unit:
+        hostname: core_unit
         restart: always
-        image: sender:latest
+        image: core:latest
         environment:
             - IPFS_DAEMON_IP=192.168.98.40
             - PYTHONUNBUFFERED=1
@@ -11,8 +11,8 @@ services:
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.30
-    entity:
-        hostname: entity
+    activity_gen:
+        hostname: activity_gen
         restart: always
         image: activent:latest
         depends_on:
@@ -22,11 +22,22 @@ services:
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.100
-
-    connector_10:
-        hostname: cn10
+    frontend:
+        hostname: display
+        depends_on:
+            - main_entity
         restart: always
-        image: connector:latest
+        image: frontend:latest
+        ports:
+            - "5000:5000"
+        networks:
+            vanetzalan0:
+                ipv4_address: 192.168.98.101
+
+    drone10:
+        hostname: d10
+        restart: always
+        image: drone:latest
         depends_on:
             - main_entity
         environment:
@@ -38,10 +49,10 @@ services:
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.80
-    connector_11:
-        hostname: cn11
+    drone11:
+        hostname: d11
         restart: always
-        image: connector:latest
+        image: drone:latest
         depends_on:
             - main_entity
         environment:
@@ -53,10 +64,10 @@ services:
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.81
-    connector_12:
-        hostname: cn12
+    drone12:
+        hostname: d12
         restart: always
-        image: connector:latest
+        image: drone:latest
         depends_on:
             - main_entity
         environment:
@@ -68,10 +79,10 @@ services:
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.82
-    connector_13:
-        hostname: cn13
+    drone13:
+        hostname: d13
         restart: always
-        image: connector:latest
+        image: drone:latest
         depends_on:
             - main_entity
         environment:
@@ -83,10 +94,10 @@ services:
         networks:
             vanetzalan0:
                 ipv4_address: 192.168.98.83
-    connector_14:
-        hostname: cn14
+    drone14:
+        hostname: d14
         restart: always
-        image: connector:latest
+        image: drone:latest
         depends_on:
             - main_entity
         environment:

@@ -1,100 +1,48 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Drone positions</title>
-    <style>
-      .object {
-        position: absolute;
-        width: 70px;
-        height: 70px;
-        left: 0;
-        top: 0;
-      }
-      .dot {
-        position: absolute;
+    <head>
+        <meta charset="utf-8" />
+        <title>Drone Network</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <style>
+            #map {
+                height: 100%;
+            }
 
-        width: 5px;
-        height: 5px;
-        background-color: red;
-        border-radius: 50%;
-      }
-      .line {
-        position: absolute;
-        height: 2px;
-        background-color: red;
-        transform-origin: 0 0;
-        }
-      .id-text {
-        position: absolute;
-        font-size: 16px;
-        font-weight: bold;
-        color: black;
-        text-align: center;
-      }
+            #statistics {
+                height: 80vh;
+            }
 
-    </style>
-    <script>
-        function updateObjects() {
-        fetch('/objects.json')
-            .then(response => response.json())
-            .then(objects => {
-            // Clear the existing objects and lines from the HTML page
-            document.getElementById('objects').innerHTML = '';
-            // Create an array to hold the objects that have a communication link
-            const comObjects = [];
-            // Iterate over each object and create an HTML element to display it
-            objects.forEach(obj => {
-                const objElem = document.createElement('img');
-                objElem.src = 'static/drone.png';
-                objElem.classList.add('object');
-                objElem.style.left = obj.x + 'px';
-                objElem.style.top = obj.y + 'px';
-                
-                // Add the object element to the HTML page
-                document.getElementById('objects').appendChild(objElem);
-                // If the object has a communication link, add it to the comObjects array
-                // Create an object element and add it to the HTML page
-                const objElem2 = document.createElement('div');
-                objElem2.classList.add('object');
-                objElem2.style.left = obj.x -10 + 'px';
-                objElem2.style.top = obj.y -10 + 'px';
-                // Create a text element to display the ID and add it to the object element
-                const idTextElem = document.createElement('div');
-                idTextElem.classList.add('id-text');
-                idTextElem.textContent = obj.id;
-                objElem2.appendChild(idTextElem);
-                document.getElementById('objects').appendChild(objElem2);
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
 
-                if (obj.com) {
-                comObjects.push(obj);
-                }
-            });
-            // Create HTML elements for each communication link
-            comObjects.forEach(obj => {
-                const lineElem = document.createElement('div');
-                lineElem.classList.add('line');
-                lineElem.style.left = (obj.x + 35) + 'px';
-                lineElem.style.top = (obj.y + 35) + 'px';
-                // Find the object that has a communication link with this object
-                const targetObj = objects.find(obj2 => obj2.id === obj.target);
-                // If the target object has a communication link, draw a line to it
-                if (targetObj && targetObj.com) {
-                const lineX = targetObj.x + 10 - obj.x - 10;
-                const lineY = targetObj.y + 10 - obj.y - 10;
-                const lineLength = Math.sqrt(lineX * lineX + lineY * lineY);
-                lineElem.style.width = lineLength + 'px';
-                lineElem.style.transform = `rotate(${Math.atan2(lineY, lineX)}rad)`;
-                // Add the line element to the HTML page
-                document.getElementById('objects').appendChild(lineElem);
-                }
-            });
-            });
-        }
-      setInterval(updateObjects, 100);
-    </script>
-  </head>
-  <body>
-    <h1>Drone position</h1>
-    <div id="objects"></div>
-  </body>
+            .container-fluid, .row, .col-md-8, .col-md-4 {
+                height: 100%;
+                padding: 0px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="map"></div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+        <script src="{{url_for('static', filename='main.js')}}"></script>
+
+
+        </script>
+    </body>
 </html>

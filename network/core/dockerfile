@@ -1,0 +1,17 @@
+FROM python:3.9-slim-buster
+
+WORKDIR /app
+
+ENV IPFS_DAEMON_IP=
+
+ENV DRONE_NUMBER=
+
+COPY examples/ /app
+
+COPY core_run.py cm.json /app/
+
+COPY requirements.txt /app/
+
+RUN pip install -r requirements.txt 
+
+CMD [ "python" , "core_run.py" ]

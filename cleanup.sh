@@ -3,7 +3,7 @@ docker compose down
 
 cd ../network
 docker compose down
-cd ../../vanetza
+cd ../vanetza
 docker compose down
 
 
